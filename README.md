@@ -1,8 +1,10 @@
 # Socket Chat Example
 ## How to run
-1. Run the local server
+1. Install dependencies
+`npm i`
+2. Run the local server
 `node server.js`
-2. Use brower and try
+3. Use brower and try
     http://localhost:3000/
 
 
