@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Socket.IO chat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font: 13px Helvetica, Arial;
+    }
+
+    form {
+      background: rgb(50, 110, 167);
+      padding: 3px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    form input {
+      border: 0;
+      padding: 10px;
+      width: 100%;
+      margin-right: .5%;
+    }
+
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #messages li {
+      padding: 5px 10px;
+    }
+
+    #messages li:nth-child(odd) {
+      background: #eee;
+    }
+
+    #inputName {
+      color: red;
+      font-size: 20px;
+      height: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <label>Name</label>
+  <input id="inputName" name="Name" type="text" />
+  <ul id="messages"></ul>
+  <form>
+    <p id="sign"><i></i></p>
+    <input id="inputMes" autocomplete="off" />
+  </form>
+</body>
+
+</html>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  var socket = io();
+  var typing = false;
+  var timeout = undefined;
+
+  function timeoutFunction() {
+    typing = false;
+    socket.emit('stop typing');
+  }
+
+  $('#inputMes').keypress(function (e) {
+    if (e.which === 13) {
+      socket.emit('send', { name: $('#inputName').val(), msg: $('#inputMes').val() });
+      $('#inputMes').val('');
+      timeoutFunction()
+      clearTimeout(timeout)
+      return false
+    }
+    else {
+      if (typing == false) {
+        typing = true
+        socket.emit('typing', { name: $('#inputName').val() });
+      } else {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(timeoutFunction, 2000);
+    }
+  });
+
+  socket.on('send', function (data) {
+    $('#messages').append($('<li>').text(data.name + ':   ' + data.msg));
+  });
+
+  socket.on('typing', function (data) {
+    $('#sign').text(data.name + ' is typing')
+  });
+
+  socket.on('stop typing', function (data) {
+    $('#sign').text('')
+  });
+</script>

@@ -8,8 +8,14 @@ app.get('/', function(req, res){
   });
 
   io.on('connection', function(socket){
-    socket.on('chat message', function(msg){
-      io.emit('chat message', msg);
+    socket.on('send', function(data){
+      io.emit('send', data);
+    });
+    socket.on('typing', function(data){
+      io.emit('typing', data);
+    });
+    socket.on('stop typing', function(data){
+      io.emit('stop typing', data);
     });
   });
 

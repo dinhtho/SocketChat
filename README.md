@@ -3,7 +3,7 @@
 1. Install dependencies
 `npm i`
 2. Run the local server
-`node server.js`
+`cd src && node server.js`
 3. Use brower and try
     http://localhost:3000/
 
